@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using k8s.Autorest;
 using System.Net;
+using FleetManager.Exceptions;
 
 namespace FleetManager.Filters
 {
@@ -11,7 +12,8 @@ namespace FleetManager.Filters
 
         private readonly Dictionary<Type, Func<Exception, HttpStatusCode>> ExceptionResponseCodeMap = new()
         {
-            { typeof(HttpOperationException), HandleHttpOperationException }
+            { typeof(HttpOperationException), HandleHttpOperationException },
+            { typeof(GameServerAllocationException), _ => HttpStatusCode.BadRequest }
         };
 
         public void OnActionExecuting(ActionExecutingContext context) { }
