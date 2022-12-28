@@ -1,9 +1,14 @@
-﻿using FleetManager.Exceptions;
+﻿using System.ComponentModel.DataAnnotations;
+using FleetManager.Exceptions;
+using FleetManager.Filters;
 using FleetManager.Models.K8sManifests;
 using FleetManager.Models.Requests.Fleet;
 using FleetManager.Models.Responses.Fleet;
 using FleetManager.Services;
+using FleetManager.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using YamlDotNet.Core.Tokens;
 
 namespace FleetManager.Controllers
 {
@@ -12,10 +17,12 @@ namespace FleetManager.Controllers
     public class FleetsController : ControllerBase
     {
         private readonly IFleetService _fleetService;
+        private readonly IValidator<CreateFleetRequest> _createFleetRequestValidator;
 
-        public FleetsController(IFleetService fleetService)
+        public FleetsController(IFleetService fleetService, IValidator<CreateFleetRequest> createFleetRequestValidator)
         {
             _fleetService = fleetService;
+            _createFleetRequestValidator = createFleetRequestValidator;
         }
 
         [HttpGet("{namespace}/{name}")]
@@ -40,6 +47,12 @@ namespace FleetManager.Controllers
         [HttpPost]
         public async Task<ActionResult<FleetCreatedResponse>> Create(CreateFleetRequest request)
         {
+            var validationResult = _createFleetRequestValidator.Validate(request);
+            if (!validationResult.IsValid)
+            {
+                return validationResult.BuildResult();
+            }
+
             return Ok(await _fleetService.Create(request));
         }
 

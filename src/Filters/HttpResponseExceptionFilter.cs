@@ -27,11 +27,10 @@ namespace FleetManager.Filters
 
             var responseCodeFunc = ExceptionResponseCodeMap.GetValueOrDefault(context.Exception.GetType(),
                 _ => HttpStatusCode.InternalServerError);
-            context.Result = new ObjectResult(new GenericHttpResponse(context.Exception.Message
-                ?? "An unexpected error has occurred"))
-            {
-                StatusCode = (int)responseCodeFunc(context.Exception)
-            };
+            context.Result = new ObjectResult(new GenericHttpResponse(context.Exception.Message ?? "An unexpected error has occurred"))
+                {
+                    StatusCode = (int)responseCodeFunc(context.Exception)
+                };
             context.ExceptionHandled = true;
         }
 
@@ -46,5 +45,5 @@ namespace FleetManager.Filters
         }
     }
 
-    record GenericHttpResponse(string Reason);
+    record GenericHttpResponse(params string[] Errors);
 }
