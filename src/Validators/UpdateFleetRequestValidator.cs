@@ -8,9 +8,9 @@ namespace FleetManager.Validators
         public UpdateFleetRequestValidator()
         {
             RuleFor(r => r.Replicas)
-                .WhenNotNull()
                 .GreaterThanOrEqualTo(Constants.MinimumResourceCount.FleetReplicas)
-                .LessThanOrEqualTo(Constants.MaximumResourceCount.FleetReplicas);
+                .LessThanOrEqualTo(Constants.MaximumResourceCount.FleetReplicas)
+                .When(r => r.Replicas is not null);
 
             RuleFor(r => r.Name)
                 .NotEmpty()
@@ -21,24 +21,24 @@ namespace FleetManager.Validators
                 .Matches(Constants.Regex.ResourceName);
 
             RuleFor(r => r.Image)
-                .WhenNotNull()
-                .Must(c => Uri.IsWellFormedUriString(c, UriKind.RelativeOrAbsolute));
+                .Must(c => Uri.IsWellFormedUriString(c, UriKind.RelativeOrAbsolute))
+                .When(r => r.Image is not null);
 
             RuleFor(r => r.LimitCpu)
-                .WhenNotNull()
-                .Matches(Constants.Regex.Cpu);
+                .Matches(Constants.Regex.Cpu)
+                .When(r => r.LimitCpu is not null);
 
             RuleFor(r => r.RequestCpu)
-                .WhenNotNull()
-                .Matches(Constants.Regex.Cpu);
+                .Matches(Constants.Regex.Cpu)
+                .When(r => r.RequestCpu is not null);
 
             RuleFor(r => r.LimitMemory)
-                .WhenNotNull()
-                .Matches(Constants.Regex.Memory);
+                .Matches(Constants.Regex.Memory)
+                .When(r => r.LimitMemory is not null);
 
             RuleFor(r => r.RequestMemory)
-                .WhenNotNull()
-                .Matches(Constants.Regex.Memory);
+                .Matches(Constants.Regex.Memory)
+                .When(r => r.RequestMemory is not null);
         }
     }
 }
