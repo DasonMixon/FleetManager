@@ -3,12 +3,12 @@ using FluentValidation;
 
 namespace FleetManager.Validators
 {
-    public class CreateFleetRequestValidator : AbstractValidator<CreateFleetRequest>
+    public class UpdateFleetRequestValidator : AbstractValidator<UpdateFleetRequest>
     {
-        public CreateFleetRequestValidator()
+        public UpdateFleetRequestValidator()
         {
             RuleFor(r => r.Replicas)
-                .NotEmpty()
+                .WhenNotNull()
                 .GreaterThanOrEqualTo(Constants.MinimumResourceCount.FleetReplicas)
                 .LessThanOrEqualTo(Constants.MaximumResourceCount.FleetReplicas);
 
@@ -21,23 +21,23 @@ namespace FleetManager.Validators
                 .Matches(Constants.Regex.ResourceName);
 
             RuleFor(r => r.Image)
-                .NotEmpty()
+                .WhenNotNull()
                 .Must(c => Uri.IsWellFormedUriString(c, UriKind.RelativeOrAbsolute));
 
             RuleFor(r => r.LimitCpu)
-                .NotEmpty()
+                .WhenNotNull()
                 .Matches(Constants.Regex.Cpu);
 
             RuleFor(r => r.RequestCpu)
-                .NotEmpty()
+                .WhenNotNull()
                 .Matches(Constants.Regex.Cpu);
 
             RuleFor(r => r.LimitMemory)
-                .NotEmpty()
+                .WhenNotNull()
                 .Matches(Constants.Regex.Memory);
 
             RuleFor(r => r.RequestMemory)
-                .NotEmpty()
+                .WhenNotNull()
                 .Matches(Constants.Regex.Memory);
         }
     }

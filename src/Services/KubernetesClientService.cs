@@ -4,20 +4,26 @@ namespace FleetManager.Services
 {
     public class KubernetesClientService : IKubernetesClientService
     {
-        public Kubernetes Client { get; init; }
+        private KubernetesClientConfiguration Config { get; set; }
+        private Kubernetes? _client;
+        public Kubernetes Client {
+            get {
+                _client ??= new Kubernetes(Config);
+                return _client;
+            }
+            private set { _client = value; }
+        }
 
         public KubernetesClientService()
         {
             // Load from the default kubeconfig on the machine.
-            var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
+            Config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
 
             // Load from a specific file:
             //var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(Environment.GetEnvironmentVariable("KUBECONFIG"));
 
             // Load from in-cluster configuration:
             //var config = KubernetesClientConfiguration.InClusterConfig()
-
-            Client = new Kubernetes(config);
         }
     }
 }

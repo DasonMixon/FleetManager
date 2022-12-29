@@ -4,6 +4,7 @@ using FleetManager.Models.K8sManifests;
 using FleetManager.Models.Requests.Fleet;
 using FleetManager.Models.Responses.Fleet;
 using FleetManager.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -20,7 +21,11 @@ namespace FleetManager.Tests.Controllers
         public async Task Get_InvalidParameters_ThrowsException(string @namespace, string name)
         {
             var fleetServiceMock = new Mock<IFleetService>();
-            var sut = new FleetsController(fleetServiceMock.Object);
+            var createFleetValidatorMock = new Mock<IValidator<CreateFleetRequest>>();
+            var updateFleetValidatorMock = new Mock<IValidator<UpdateFleetRequest>>();
+            var deleteFleetValidatorMock = new Mock<IValidator<DeleteFleetRequest>>();
+            var sut = new FleetsController(fleetServiceMock.Object, createFleetValidatorMock.Object,
+                updateFleetValidatorMock.Object, deleteFleetValidatorMock.Object);
 
             await Assert.ThrowsAsync<ControllerParameterValidationException>(
                 async () => await sut.Get(@namespace, name));
@@ -32,9 +37,13 @@ namespace FleetManager.Tests.Controllers
             var expectedFleet = new Fleet(DateTime.UtcNow, "fleet-name", "default", 0, 3, 3, 0);
 
             var fleetServiceMock = new Mock<IFleetService>();
+            var createFleetValidatorMock = new Mock<IValidator<CreateFleetRequest>>();
+            var updateFleetValidatorMock = new Mock<IValidator<UpdateFleetRequest>>();
+            var deleteFleetValidatorMock = new Mock<IValidator<DeleteFleetRequest>>();
             fleetServiceMock.Setup(f => f.Get(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(expectedFleet));
-            var sut = new FleetsController(fleetServiceMock.Object);
+            var sut = new FleetsController(fleetServiceMock.Object, createFleetValidatorMock.Object,
+                updateFleetValidatorMock.Object, deleteFleetValidatorMock.Object);
 
             var result = await sut.Get("default", "fleet-name");
 
@@ -53,7 +62,11 @@ namespace FleetManager.Tests.Controllers
         public async Task List_InvalidParameters_ThrowsException(string @namespace)
         {
             var fleetServiceMock = new Mock<IFleetService>();
-            var sut = new FleetsController(fleetServiceMock.Object);
+            var createFleetValidatorMock = new Mock<IValidator<CreateFleetRequest>>();
+            var updateFleetValidatorMock = new Mock<IValidator<UpdateFleetRequest>>();
+            var deleteFleetValidatorMock = new Mock<IValidator<DeleteFleetRequest>>();
+            var sut = new FleetsController(fleetServiceMock.Object, createFleetValidatorMock.Object,
+                updateFleetValidatorMock.Object, deleteFleetValidatorMock.Object);
 
             await Assert.ThrowsAsync<ControllerParameterValidationException>(
                 async () => await sut.List(@namespace));
@@ -69,9 +82,13 @@ namespace FleetManager.Tests.Controllers
             };
 
             var fleetServiceMock = new Mock<IFleetService>();
+            var createFleetValidatorMock = new Mock<IValidator<CreateFleetRequest>>();
+            var updateFleetValidatorMock = new Mock<IValidator<UpdateFleetRequest>>();
+            var deleteFleetValidatorMock = new Mock<IValidator<DeleteFleetRequest>>();
             fleetServiceMock.Setup(f => f.List(It.IsAny<string>()))
                 .Returns(Task.FromResult(expectedFleets.AsEnumerable()));
-            var sut = new FleetsController(fleetServiceMock.Object);
+            var sut = new FleetsController(fleetServiceMock.Object, createFleetValidatorMock.Object,
+                updateFleetValidatorMock.Object, deleteFleetValidatorMock.Object);
 
             var result = await sut.List("default");
 
@@ -90,9 +107,13 @@ namespace FleetManager.Tests.Controllers
                 DateTime.UtcNow, "fleet-name", "default");
 
             var fleetServiceMock = new Mock<IFleetService>();
+            var createFleetValidatorMock = new Mock<IValidator<CreateFleetRequest>>();
+            var updateFleetValidatorMock = new Mock<IValidator<UpdateFleetRequest>>();
+            var deleteFleetValidatorMock = new Mock<IValidator<DeleteFleetRequest>>();
             fleetServiceMock.Setup(f => f.Create(It.IsAny<CreateFleetRequest>()))
                 .Returns(Task.FromResult(expectedFleetCreatedResponse));
-            var sut = new FleetsController(fleetServiceMock.Object);
+            var sut = new FleetsController(fleetServiceMock.Object, createFleetValidatorMock.Object,
+                updateFleetValidatorMock.Object, deleteFleetValidatorMock.Object);
 
             var request = new CreateFleetRequest(
                 "fleet-name", "default", "dockerhub.com/someimage:latest", 3, "64Mi", "30m", "128Mi", "60m");
@@ -113,9 +134,13 @@ namespace FleetManager.Tests.Controllers
                 DateTime.UtcNow, "fleet-name", "default");
 
             var fleetServiceMock = new Mock<IFleetService>();
+            var createFleetValidatorMock = new Mock<IValidator<CreateFleetRequest>>();
+            var updateFleetValidatorMock = new Mock<IValidator<UpdateFleetRequest>>();
+            var deleteFleetValidatorMock = new Mock<IValidator<DeleteFleetRequest>>();
             fleetServiceMock.Setup(f => f.Update(It.IsAny<UpdateFleetRequest>()))
                 .Returns(Task.FromResult(expectedFleetUpdatedResponse));
-            var sut = new FleetsController(fleetServiceMock.Object);
+            var sut = new FleetsController(fleetServiceMock.Object, createFleetValidatorMock.Object,
+                updateFleetValidatorMock.Object, deleteFleetValidatorMock.Object);
 
             var request = new UpdateFleetRequest("fleet-name", "default", Replicas: 6);
             var result = await sut.Update(request);
@@ -135,9 +160,13 @@ namespace FleetManager.Tests.Controllers
                 DateTime.UtcNow, "fleet-name", "default");
 
             var fleetServiceMock = new Mock<IFleetService>();
+            var createFleetValidatorMock = new Mock<IValidator<CreateFleetRequest>>();
+            var updateFleetValidatorMock = new Mock<IValidator<UpdateFleetRequest>>();
+            var deleteFleetValidatorMock = new Mock<IValidator<DeleteFleetRequest>>();
             fleetServiceMock.Setup(f => f.Delete(It.IsAny<DeleteFleetRequest>()))
                 .Returns(Task.FromResult(expectedFleetDeletedResponse));
-            var sut = new FleetsController(fleetServiceMock.Object);
+            var sut = new FleetsController(fleetServiceMock.Object, createFleetValidatorMock.Object,
+                updateFleetValidatorMock.Object, deleteFleetValidatorMock.Object);
 
             var request = new DeleteFleetRequest("fleet-name", "default");
             var result = await sut.Delete(request);

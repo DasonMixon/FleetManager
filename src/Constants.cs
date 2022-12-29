@@ -17,5 +17,22 @@
             public const string NamePlural = "gameserverallocations";
             public const string Kind = "GameServerAllocation";
         }
+
+        public static class Regex
+        {
+            public const string ResourceName = "[a-z-]+";
+            public const string Cpu = "[0-9]+m";
+            public const string Memory = "[0-9]+Mi";
+        }
+
+        public static class MinimumResourceCount
+        {
+            public const int FleetReplicas = 1;
+        }
+
+        public static class MaximumResourceCount
+        {
+            public const int FleetReplicas = 999;
+        }
     }
 }
