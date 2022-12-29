@@ -45,5 +45,5 @@ namespace FleetManager.Filters
         }
     }
 
-    record GenericHttpResponse(params string[] Errors);
+    public record GenericHttpResponse(params string[] Errors);
 }

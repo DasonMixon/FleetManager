@@ -49,7 +49,6 @@ namespace FleetManager.Controllers
                 : validationResult.BuildResult();
         }
 
-        // TODO: Maybe this should be PATCH since you can update individual parts of the fleet deployment
         [HttpPut]
         public async Task<ActionResult<FleetUpdatedResponse>> Update(UpdateFleetRequest request)
         {
