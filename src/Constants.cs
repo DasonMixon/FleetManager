@@ -27,7 +27,7 @@
 
         public static class MinimumResourceCount
         {
-            public const int FleetReplicas = 1;
+            public const int FleetReplicas = 0;
         }
 
         public static class MaximumResourceCount
